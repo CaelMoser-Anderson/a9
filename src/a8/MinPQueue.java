@@ -139,15 +139,19 @@ public class MinPQueue<KeyType> {
 
         // TODO 6d: Implement this method according to its specification
         int originalPos = index.get(key);
-        System.out.println(heap.get(originalPos));
-        swap(originalPos, heap.size()-1);
-        System.out.println(heap.getLast());
-        heap.removeLast();
-        bubbleDown(originalPos);
+        heap.set(originalPos, new Entry<>(key, priority));
         bubbleUp(originalPos);
-        heap.add(new Entry<>(key,priority));
-        index.put(key, heap.size() - 1);
-        bubbleUp(heap.size()-1);
+        bubbleDown(originalPos);
+
+//        System.out.println(heap.get(originalPos));
+//        swap(originalPos, heap.size()-1);
+//        System.out.println(heap.getLast());
+//        heap.removeLast();
+//        bubbleDown(originalPos);
+//        bubbleUp(originalPos);
+//        heap.add(new Entry<>(key,priority));
+//        index.put(key, heap.size() - 1);
+//        bubbleUp(heap.size()-1);
     }
 
     /**

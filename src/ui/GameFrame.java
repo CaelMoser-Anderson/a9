@@ -6,16 +6,11 @@ import java.awt.Color;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.Timer;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import model.GameModel;
 import util.Randomness;
@@ -268,6 +263,22 @@ public class GameFrame extends JFrame implements KeyListener {
         model.addPropertyChangeListener("lives", updateScoreLabel);
         updateScoreLabel.propertyChange(null); // initialize score label
 
+        model.addPropertyChangeListener("game_state", e -> {
+            GameModel.GameState newState = (GameModel.GameState) e.getNewValue();
+            switch(newState) {
+                case VICTORY -> {
+                    updatePlayState.accept(PlayState.PAUSED);
+                    showWinMessage();}
+                case DEFEAT -> {
+                    updatePlayState.accept(PlayState.PAUSED);
+                    showLoseMessage();
+                }
+                case READY -> updatePlayState.accept(PlayState.LIFESTART);
+                case PLAYING -> {}
+            }
+        }
+        );
+
         // TODO 5.1A: Add a property change listener to detect a change to the "game_state" property.
         //  The method `e.getNewValue()` of its `PropertyEvent` parameter `e` returns an Object
         //  with dynamic type `GameModel.GameState`. If the player is not actively `PLAYING`
@@ -275,6 +286,7 @@ public class GameFrame extends JFrame implements KeyListener {
         //  `showWinMessage()`. If the game ended in a `DEFEAT`, call `showLoseMessage()`.
         //  Otherwise, update the play state to begin the next life.
     }
+
 
     /**
      * Show a modal dialog indicating that the current game has been won.
@@ -285,6 +297,10 @@ public class GameFrame extends JFrame implements KeyListener {
         //   the `JOptionPane` documentation to determine an appropriate method to call to produce
         //   this dialog box and understand its parameters. When the dialog is closed by the player,
         //   a new game should be created and shown.
+
+        JOptionPane.showMessageDialog(this, "Final score: " + model.score(),
+                "You Win!",JOptionPane.INFORMATION_MESSAGE);
+        newGame();
     }
 
     /**
@@ -296,6 +312,10 @@ public class GameFrame extends JFrame implements KeyListener {
         //   `JOptionPane` documentation to determine an appropriate method to call to produce this
         //   dialog box and understand its parameters. When the dialog is closed by the player, a
         //   new game should be created and shown.
+
+        JOptionPane.showMessageDialog(this, "Final score: " + model.score(),
+                "You Lost!",JOptionPane.INFORMATION_MESSAGE);
+        newGame();
     }
 
     /* ****************************************************************

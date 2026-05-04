@@ -1,8 +1,8 @@
 package graph;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import a8.MinPQueue;
+
+import java.util.*;
 
 public class Pathfinding {
 
@@ -43,13 +43,40 @@ public class Pathfinding {
         // Associate vertex labels with info about the shortest-known path from `start` to that
         // vertex.  Populated as vertices are discovered (not as they are settled).
         Map<V, PathEnd<E>> pathInfo = new HashMap<>();
+        MinPQueue<V> frontier = new MinPQueue<>();
+
+        frontier.addOrUpdate(src,0);
+        pathInfo.put(src,new PathEnd<>(0, null));
+
+        while (!frontier.isEmpty()) {
+            V vert = frontier.remove();
+            E prevEdge;
+            if (vert.equals(src)) {
+                prevEdge = previousEdge;
+            } else { prevEdge = pathInfo.get(vert).lastEdge();}
+
+            for (E edge : vert.outgoingEdges()) {
+                V head = edge.head();
+                V tail = edge.tail();
+
+                // check for null previous edge and backtracking
+                if (prevEdge == null || (!head.equals(prevEdge.tail()) || !tail.equals(prevEdge.head()))) {
+                    double newDistance = edge.weight()+ pathInfo.get(vert).distance;
+                    if (!pathInfo.containsKey(head) || newDistance < pathInfo.get(head).distance) {
+                        pathInfo.put(head, new PathEnd<>(newDistance, edge));
+                        frontier.addOrUpdate(head, newDistance);
+                    }
+                }
+
+            }
+        }
+        return pathInfo;
 
         // TODO 4.2A: Complete the implementation of this method according to its specification. Your
         //  implementation should make use of Dijkstra's algorithm (modified to prevent path back-
         //  tracking), creating a `MinPQueue` to manage the "frontier" set of vertices, and settling
         //  the vertices in this frontier in increasing distance order.
 
-        return pathInfo;
     }
 
     /**
@@ -60,6 +87,14 @@ public class Pathfinding {
      */
     static <V, E extends WeightedEdge<V>> List<E> pathTo(Map<V, PathEnd<E>> pathInfo, V src, V dst) {
         // TODO 4.2B: Complete this implementation of this method according to its specification.
-        throw new UnsupportedOperationException();
+        List<E> ret= new ArrayList<>();
+        V current = dst;
+
+        while (!current.equals(src)) {
+            E lastEdge = pathInfo.get(current).lastEdge();
+            ret.add(0,lastEdge);
+            current = lastEdge.tail();
+        }
+        return ret;
     }
 }

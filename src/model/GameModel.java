@@ -96,6 +96,7 @@ public class GameModel {
     //  input.  Also, add a `playerCommand()` accessor and an `updatePlayerCommand()` mutator method
     //  for this field.
 
+
     /**
      * The direction of our Pacmann player
      */
@@ -147,13 +148,13 @@ public class GameModel {
         // (Optional) Replace the above line with the following after completing TODO 5
         //actors.add(withAI ? new PacMannAI(this) : new PacMannManual(this));
         // Uncomment the following line after completing TODO 4.4A
-        //actors.add(new Blinky(this));
+        actors.add(new Blinky(this));
         // Uncomment the following line after completing TODO 4.4B
-        //actors.add(new Pinky(this));
+        actors.add(new Pinky(this));
         // Uncomment the following line after completing TODO 4.4C
-        //actors.add(new Inky(this));
+        actors.add(new Inky(this));
         // Uncomment the following line after completing TODO 4.4D
-        //actors.add(new Clyde(this, randomness.generatorFor("Clyde")));
+        actors.add(new Clyde(this, randomness.generatorFor("Clyde")));
 
         boolean notifyOnEdit = false; // no threads, so false is okay
         propSupport = new SwingPropertyChangeSupport(this, notifyOnEdit);

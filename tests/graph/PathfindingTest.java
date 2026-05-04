@@ -4,6 +4,7 @@ import graph.Pathfinding.PathEnd;
 import java.util.*;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -111,7 +112,14 @@ public class PathfindingTest {
         @Test
         void testStronglyConnectedPreviousPreventsReaching() {
             // TODO 4.3A: Complete this test case
-            fail("Testcase has not been implemented");
+            SimpleGraph g = SimpleGraph.fromText("A -- B");
+            SimpleVertex va = g.getVertex("A");
+            SimpleVertex vb = g.getVertex("B");
+            SimpleEdge edge = new SimpleEdge(vb,va,3);
+            Map<SimpleVertex, PathEnd<SimpleEdge>> paths = Pathfinding.pathInfo(va,edge);
+            assertEquals(1, paths.size()); // only va is reachable
+            assertTrue(paths.containsKey(va));
+            assertFalse(paths.containsKey(vb));
         }
 
         @DisplayName("In a graph where the shortest path with backtracking is shorter than the "
@@ -119,7 +127,33 @@ public class PathfindingTest {
         @Test
         void testBacktrackingShorter() {
             // TODO 4.3B: Complete this test case
-            fail("Testcase has not been implemented");
+            SimpleGraph g = SimpleGraph.fromText("""
+            A -- B 1
+            A -> D 1
+            D -> B 1
+            B -> C 20
+            """
+            );
+            SimpleVertex va = g.getVertex("A");
+            SimpleVertex vb = g.getVertex("B");
+            SimpleVertex vc = g.getVertex("C");
+            SimpleVertex vd = g.getVertex("D");
+
+            SimpleEdge prevEdge = g.getEdge(va, vb);
+            // vb -> vb
+            Map<SimpleVertex, PathEnd<SimpleEdge>> paths = Pathfinding.pathInfo(vb, prevEdge);
+            assertEquals(0,paths.get(vb).distance());
+
+            // vb -> vc
+            assertEquals(20,paths.get(vc).distance());
+            assertEquals(g.getEdge(vb, vc), paths.get(vc).lastEdge()); // check it took the direct (expensive) route
+
+            // vb -> va (not possible w/o backtracking)
+            assertNull(paths.get(va));
+
+            // vb -> vd (not possible w/o backtracking)
+            assertNull(paths.get(vd));
+            assertEquals(2,paths.size());
         }
 
         @DisplayName("In a graph where some shortest non-backtracking path includes at least 3 edges.")
