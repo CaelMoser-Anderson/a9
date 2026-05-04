@@ -160,7 +160,21 @@ public class PathfindingTest {
         @Test
         void testLongerPaths() {
             // TODO 4.3C: Complete this test case
-            fail("Testcase has not been implemented");
+            SimpleGraph g = SimpleGraph.fromText(graph2);
+            SimpleVertex va = g.getVertex("A");
+            SimpleVertex ve = g.getVertex("E");
+            SimpleVertex vf = g.getVertex("F");
+            SimpleVertex vg = g.getVertex("G");
+
+            // A - > G takes 4 Edges
+            Map<SimpleVertex, PathEnd<SimpleEdge>> paths = Pathfinding.pathInfo(va, null);
+            assertEquals(7, paths.size());
+            assertEquals(50, paths.get(vg).distance());
+            assertEquals(g.getEdge(vf, vg), paths.get(vg).lastEdge());
+            assertEquals(0, paths.get(va).distance());
+            assertEquals(34, paths.get(vf).distance());
+            assertEquals(g.getEdge(ve, vf), paths.get(vf).lastEdge());
+
         }
     }
 
@@ -198,16 +212,24 @@ public class PathfindingTest {
         @DisplayName("When the shortest non-backtracking path consists of a single edge.")
         @Test
         void testOneEdgePath() {
-            // TODO 4.3D: Complete this test case
-            fail("Testcase has not been implemented");
+            SimpleGraph g = SimpleGraph.fromText(graph2);
+            List<SimpleEdge> path = Pathfinding.shortestNonBacktrackingPath(g.getVertex("B"),
+                    g.getVertex("E"), null); // B - > E
+            assertNotNull(path);
+            assertPathVertices(Arrays.asList("B", "E"), path);
         }
 
         @DisplayName("Path is empty when `src` and `dst` are the same.")
         @Test
         void testEmptyPath() {
             // TODO 4.3E: Complete this test case
-            fail("Testcase has not been implemented");
+            SimpleGraph g = SimpleGraph.fromText(graph2);
+            List<SimpleEdge> path = Pathfinding.shortestNonBacktrackingPath(g.getVertex("B"),
+                    g.getVertex("B"), null); // B - > B
+            assertNotNull(path);
+            assertTrue(path.isEmpty());
         }
+
 
         @DisplayName("Path is null when there is not a path from `src` to `dst` (even without "
                 + "accounting for back-tracking.")
@@ -224,7 +246,15 @@ public class PathfindingTest {
         @Test
         void testNonBacktrackingPreventsPath() {
             // TODO 4.3F: Complete this test case
-            fail("Testcase has not been implemented");
+            SimpleGraph g = SimpleGraph.fromText("""
+            A -- B 4
+            A -> C 20
+            """);
+            SimpleVertex va = g.getVertex("A");
+            SimpleVertex vb = g.getVertex("B");
+            SimpleVertex vc = g.getVertex("C");
+            List<SimpleEdge> path = Pathfinding.shortestNonBacktrackingPath(vb,vc, g.getEdge(va,vb));
+            assertNull(path);
         }
 
         @DisplayName("When the graph includes multiple shortest paths from `src` to `dst`, one of "
@@ -232,7 +262,22 @@ public class PathfindingTest {
         @Test
         void testMultipleShortestPaths() {
             // TODO 4.3G: Complete this test case
-            fail("Testcase has not been implemented");
+            SimpleGraph g = SimpleGraph.fromText("""
+            A -> D 4
+            A -> B 1
+            A -> C 2
+            B -> D 3
+            C -> D 2
+            """);
+            SimpleVertex va = g.getVertex("A");
+            SimpleVertex vb = g.getVertex("B");
+            SimpleVertex vc = g.getVertex("C");
+            SimpleVertex vd = g.getVertex("D");
+
+            List<SimpleEdge> path = Pathfinding.shortestNonBacktrackingPath(va,vd, null);
+            assertNotNull(path);
+            assertTrue(path.getLast() == g.getEdge(va,vd) || (path.getLast() == g.getEdge(vb,vd)) ||
+                    path.getLast() == g.getEdge(vc,vd));
         }
     }
 
