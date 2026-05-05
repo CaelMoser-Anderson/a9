@@ -10,6 +10,10 @@ public class Inky extends Ghost{
         super(model, Color.cyan,6000);
     }
 
+    /**
+     * Return the vertex that Inky is targeting. Targets itself to be equidistant from Blinky and Pac-Mann. When
+     * FLEEing, returns the southwest corner.
+     */
     @Override
     protected MazeGraph.MazeVertex target() {
         if (this.state() == GhostState.CHASE) {

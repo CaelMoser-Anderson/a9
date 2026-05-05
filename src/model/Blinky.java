@@ -10,9 +10,13 @@ public class Blinky extends Ghost{
         super(model, Color.red,2000);
     }
 
+    /**
+     * Returns the vertex that Blinky is targeting. Targets Pac-Mann's location. When FLEEing, Blinky goes to the
+     * southwest corner.
+     */
+
     @Override
     protected MazeGraph.MazeVertex target() {
-        // when in the chase state, blinky targets pac-mann's nearestVertex()
         if (this.state() == GhostState.CHASE) {
             return model.pacMann().nearestVertex();
         }

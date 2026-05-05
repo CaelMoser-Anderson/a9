@@ -6,9 +6,15 @@ import java.awt.*;
 
 public class Pinky extends Ghost {
 
+
     public Pinky(GameModel model) {
         super(model, Color.pink,4000);
     }
+
+    /**
+     * Return the vertex Pinky ghost is targeting. Targets itself to be equidistant from Blinky and Pac-Mann. When
+     * FLEEing, returns the northeast corner.
+     */
     @Override
     protected MazeGraph.MazeVertex target() {
         if (this.state() == GhostState.CHASE) {

@@ -14,6 +14,10 @@ public class Clyde extends Ghost{
         this.randNum = randNum;
     }
 
+    /**
+     * Return the vertex that this ghost is targeting. If Clyde is a distance of 10 or greater, it returns Pac-mann's
+     * location. If the distance is under 10, returns a random location. When FLEEing, returns the southeast corner.
+     */
     @Override
     protected MazeGraph.MazeVertex target() {
         if (this.state() == GhostState.CHASE) {
